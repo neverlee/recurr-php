@@ -74,7 +74,7 @@ function timeline($uinx) {
 }
 
 $now = time();
-$r = new Recurr($now, $now+100, FREQ_DAILY, 1, $now+86400*100, 100);
+$r = new Recurr($now, $now+100, FREQ_DAILY, 1, $now+86400*100, LUNAR, MFIX_LASTDAY);
 $r->setExDates(array($now), false);
 var_dump($r->dump());
 $ret = $r->constraint($now, $now + 86400 * 50, 10);
