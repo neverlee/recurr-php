@@ -94,6 +94,8 @@ foreach($ret as $v) {
 * FREQ_WEEKLY 频率 周
 * FREQ_MONTHLY 频率 月
 * FREQ_YEARLY 频率 年
+* CT_SOLAR 公历日程
+* CT_LUNAR 农历日程
 * MFIX_IGNORE 月末不修复
 * MFIX_LASTDAY 月末以最后一天修复
 

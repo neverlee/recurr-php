@@ -196,8 +196,8 @@ ZEND_MINIT_FUNCTION(recurr) {
     REGISTER_LONG_CONSTANT("FREQ_MONTHLY"  , MONTHLY    , CONST_PERSISTENT | CONST_CS);
     REGISTER_LONG_CONSTANT("FREQ_YEARLY"   , YEARLY     , CONST_PERSISTENT | CONST_CS);
 
-    REGISTER_LONG_CONSTANT("SOLAR"         , Solar      , CONST_PERSISTENT | CONST_CS);
-    REGISTER_LONG_CONSTANT("LUNAR"         , Lunar      , CONST_PERSISTENT | CONST_CS);
+    REGISTER_LONG_CONSTANT("CY_SOLAR"      , Solar      , CONST_PERSISTENT | CONST_CS);
+    REGISTER_LONG_CONSTANT("CY_LUNAR"      , Lunar      , CONST_PERSISTENT | CONST_CS);
 
     REGISTER_LONG_CONSTANT("MFIX_IGNORE"   , Ignore     , CONST_PERSISTENT | CONST_CS);
     REGISTER_LONG_CONSTANT("MFIX_LASTDAY"  , UseLastDay , CONST_PERSISTENT | CONST_CS);
@@ -406,6 +406,7 @@ PHP_METHOD(Recurr, dump)
     add_assoc_double(return_value, "until", dt_unix(rule->until));
     add_assoc_long(return_value, "freq", rule->freq);
     add_assoc_long(return_value, "interval", rule->interval);
+    add_assoc_long(return_value, "calendar", rule->lunarflag);
     add_assoc_long(return_value, "monthfix", rule->monthfix);
     add_assoc_bool(return_value, "exbyday", rule->exdates.byday);
 
@@ -487,7 +488,7 @@ void rule_constraint(zval *rv, rule_t *r, datetime_t after, datetime_t before, i
                 } else if (r->freq == YEARLY) {
                     ay += r->interval;      //年加一
                 }
-    
+
                 datetime_t rcend = rc + duration;//本次循环的日程结束时间戳
                 if (rc >= after && rcend <= before) {//日程在范围内，（日程的整个范围在里面）
                     if (!tc_isexclude(&(r->exdates), rc)) {//是否期望去掉的
@@ -497,12 +498,12 @@ void rule_constraint(zval *rv, rule_t *r, datetime_t after, datetime_t before, i
                 } else {
                     break;
                 }
-    
-                
+
+
                 datetime_t rt = sdt_datefix(year+ay, month+am, day, r->monthfix);//将日期粗暴变化进行修复
-    
+
                 rt += dsecond;
-    
+
                 rc = rt;
             }
         } else {//农历版
@@ -514,7 +515,7 @@ void rule_constraint(zval *rv, rule_t *r, datetime_t after, datetime_t before, i
                 } else if (r->freq == YEARLY) {
                     ay += r->interval;      //年加一
                 }
-    
+
                 datetime_t rcend = rc + duration;//本次循环的日程结束时间戳
                 if (rc >= after && rcend <= before) {//日程在范围内，（日程的整个范围在里面）
                     if (!tc_isexclude(&(r->exdates), rc)) {//是否期望去掉的
@@ -534,8 +535,7 @@ void rule_constraint(zval *rv, rule_t *r, datetime_t after, datetime_t before, i
                 } else {
                     break;
                 }
-    
-                
+
                 if (r->freq == YEARLY ){
                     add_lunaryear(year, month, day, ay, &triger_result);
                     triger_result.stamp += dsecond;
@@ -547,7 +547,7 @@ void rule_constraint(zval *rv, rule_t *r, datetime_t after, datetime_t before, i
                     __int64_t tr = add_lunarmonth(year, month, day, am);
                     rc = sdt_unix(tr+dsecond);
                 }
-    
+
             }
         }
     }
