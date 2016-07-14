@@ -74,7 +74,7 @@ function timeline($uinx) {
 }
 
 $now = time();
-$r = new Recurr($now, $now+100, FREQ_DAILY, 1, $now+86400*100, 100);
+$r = new Recurr($now, $now+100, FREQ_DAILY, 1, $now+86400*100, LUNAR, MFIX_LASTDAY);
 $r->setExDates(array($now), false);
 var_dump($r->dump());
 $ret = $r->constraint($now, $now + 86400 * 50, 10);
@@ -94,6 +94,8 @@ foreach($ret as $v) {
 * FREQ_WEEKLY 频率 周
 * FREQ_MONTHLY 频率 月
 * FREQ_YEARLY 频率 年
+* CT_SOLAR 公历日程
+* CT_LUNAR 农历日程
 * MFIX_IGNORE 月末不修复
 * MFIX_LASTDAY 月末以最后一天修复
 
